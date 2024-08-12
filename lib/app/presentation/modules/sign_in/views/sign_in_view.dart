@@ -18,75 +18,122 @@ class _SignInViewState extends State<SignInView> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Form(
-            child: AbsorbPointer(
-              absorbing: _fetching,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) {
-                      setState(() {
-                        _username = value.trim().toLowerCase();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'username',
+        child: Form(
+          child: AbsorbPointer(
+            absorbing: _fetching,
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                const Text(
+                  "Aplicación ganadería",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 50),
+                Center(
+                  child: Container(
+                    width: 190,
+                    height: 190,
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                     ),
-                    validator: (value) {
-                      value = value?.trim().toLowerCase() ?? '';
-                      if (value.isEmpty) {
-                        return 'Invalid user name';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  TextFormField(
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    onChanged: (value) {
-                      setState(() {
-                        _password = value.replaceAll(' ', '').toLowerCase();
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'password',
+                    child: Image.asset(
+                      'assets/images/logo_login.png',
+                      fit: BoxFit.cover,
                     ),
-                    validator: (value) {
-                      value = value?.replaceAll(' ', '').toLowerCase() ?? '';
-                      if (value.length < 4) {
-                        return 'Invalid password';
-                      }
-                      return null;
-                    },
                   ),
-                  const SizedBox(
-                    height: 20,
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('login-email'),
+                  onChanged: (value) {
+                    setState(() {
+                      _username = value.trim().toLowerCase();
+                    });
+                  },
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'usuario',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    ),
                   ),
-                  Builder(
-                    builder: (context) {
-                      if (_fetching) {
-                        return const CircularProgressIndicator();
-                      }
-                      return MaterialButton(
-                        onPressed: () {
-                          final isValid = Form.of(context)!.validate();
-                          if (isValid) {
-                            _submit(context);
-                          }
-                        },
-                        color: Colors.blue,
-                        child: const Text('Sign in'),
-                      );
-                    },
-                  )
-                ],
-              ),
+                  validator: (value) {
+                    value = value?.trim().toLowerCase() ?? '';
+                    if (value.isEmpty) {
+                      return 'Invalid user name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('login-pass'),
+                  onChanged: (value) {
+                    setState(() {
+                      _password = value.replaceAll(' ', '').toLowerCase();
+                    });
+                  },
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'contraseña',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                    ),
+                  ),
+                  validator: (value) {
+                    value = value?.replaceAll(' ', '').toLowerCase() ?? '';
+                    if (value.length < 4) {
+                      return 'Invalid password';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Builder(
+                  builder: (context) {
+                    if (_fetching) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return ElevatedButton(
+                      onPressed: () {
+                        final isValid = Form.of(context).validate();
+                        if (isValid) {
+                          _submit(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.indigo.shade400, // Color de fondo
+                        foregroundColor: Colors.white, // Color del texto
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Ingresar',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
             ),
           ),
         ),
@@ -124,7 +171,11 @@ class _SignInViewState extends State<SignInView> {
         );
       },
       (user) {
-        Navigator.pushReplacementNamed(context, Routes.home);
+        Navigator.pushReplacementNamed(
+          context,
+          Routes.home,
+          arguments: user,
+        );
       },
     );
   }

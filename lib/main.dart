@@ -1,3 +1,5 @@
+import 'package:app_ganaderia/app/data/repositories_implementation/users_repository_imp.dart';
+import 'package:app_ganaderia/app/domain/repositories/users_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -19,21 +21,23 @@ void main() {
         Connectivity(),
         InternetCheckear(),
       ),
+      usersRepository: UsersRepositoryImp(),
       child: MyApp(),
     ),
   );
 }
 
 class Injector extends InheritedWidget {
-  const Injector({
-    super.key,
-    required super.child,
-    required this.authenticationRepository,
-    required this.connectivityRepository,
-  });
+  const Injector(
+      {super.key,
+      required super.child,
+      required this.authenticationRepository,
+      required this.connectivityRepository,
+      required this.usersRepository});
 
   final ConnectivityRepository connectivityRepository;
   final AuthenticationRepository authenticationRepository;
+  final UsersRepository usersRepository;
 
   @override
   // ignore: avoid_renaming_method_parameters

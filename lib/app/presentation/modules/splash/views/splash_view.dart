@@ -30,9 +30,13 @@ class _SplashViewState extends State<SplashView> {
         final user = await authenticationRepository.getUserData();
         if (mounted) {
           if (user != null) {
-            _goTo(Routes.home);
+            Navigator.pushReplacementNamed(
+              context,
+              Routes.home,
+              arguments: user,
+            );
           } else {
-            _goTo(Routes.home);
+            _goTo(Routes.signIn);
           }
         }
       } else if (mounted) {

@@ -1,3 +1,4 @@
+import 'package:app_ganaderia/app/data/services/local/localDb.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:app_ganaderia/app/domain/either.dart';
 import 'package:app_ganaderia/app/domain/enums.dart';
@@ -12,8 +13,20 @@ class AuthenticationRepositoryImp implements AuthenticationRepository {
   AuthenticationRepositoryImp(this._secureStorage);
 
   @override
-  Future<User?> getUserData() {
-    return Future.value(User());
+  Future<User?> getUserData() async {
+    final id = await _secureStorage.read(key: _key);
+    final user = await LocalDatabase().getUserById(id: id);
+    print('user $user');
+    if (!user.isEmpty) {
+      return User(
+        user['name'],
+        user['email'],
+        user['photo'],
+        1,
+        // user['perfil'],
+      );
+    }
+    return Future.value(User('', '', '', 0));
   }
 
   @override
@@ -28,18 +41,27 @@ class AuthenticationRepositoryImp implements AuthenticationRepository {
     String password,
   ) async {
     await Future.delayed(
-      Duration(seconds: 2),
+      const Duration(seconds: 2),
     );
-    if (username != 'test') {
+    final validateName = await LocalDatabase().readUserByEmail(email: username);
+    if (validateName.isEmpty) {
       return Either.left(signInFailure.notFound);
     }
-    if (password != '123456') {
+
+    final validate =
+        await LocalDatabase().readUser(email: username, password: password);
+    if (validate.isEmpty) {
       return Either.left(signInFailure.unauthorized);
     }
 
-    await _secureStorage.write(key: _key, value: '123');
+    await _secureStorage.write(key: _key, value: validate['id']);
     return Either.right(
-      User(),
+      User(
+        validate['name'],
+        validate['email'],
+        validate['photo'],
+        validate['perfil'],
+      ),
     );
   }
 
