@@ -275,7 +275,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                                     IconButton(
                                       icon: const Icon(Icons.edit),
                                       onPressed: () {
-                                        // _editRecord(_index);
+                                        _editRecord(_index);
                                       },
                                     ),
                                     IconButton(

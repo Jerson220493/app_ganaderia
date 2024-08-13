@@ -112,7 +112,7 @@ class _FormModalState extends State<FormModal> {
                 if (_formKey.currentState?.validate() ?? false) {
                   _formKey.currentState?.save();
                   Navigator.pop(context);
-                  int auxP = _perfil == 'Administrador' ? 1 : 0;
+                  int auxP = _perfil == 'Administrador' ? 1 : 2;
                   insertData(context, _name, _email, _password, auxP);
                   setState(() {});
                 }

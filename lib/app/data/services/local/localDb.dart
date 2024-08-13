@@ -83,7 +83,7 @@ class LocalDatabase {
         "name": user['name'],
         "email": user['email'],
         "photo": user['photo'],
-        "perfil": user['perfil'],
+        "perfil": user['perfil'].toString(),
       };
     }
     return {};
@@ -125,7 +125,7 @@ class LocalDatabase {
   }
 
   Future updateUser({id, name, email, password, perfil}) async {
-    var photo = perfil == '1' ? "admin.png" : "operator.png";
+    var photo = perfil == 1 ? "admin.png" : "operator.png";
     final db = await database;
     await db!.rawQuery("""
       UPDATE users SET 
