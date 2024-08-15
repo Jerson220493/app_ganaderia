@@ -73,7 +73,7 @@ class _SignInViewState extends State<SignInView> {
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 TextFormField(
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -99,7 +99,7 @@ class _SignInViewState extends State<SignInView> {
                   },
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
                 ),
                 Builder(
                   builder: (context) {

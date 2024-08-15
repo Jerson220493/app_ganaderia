@@ -27,4 +27,9 @@ class UsersRepositoryImp implements UsersRepository {
         id: id, name: name, email: email, perfil: perfil, password: password);
     // return user;
   }
+
+  @override
+  Future deleteUserData(id) async {
+    await LocalDatabase().deleteUser(id: id);
+  }
 }

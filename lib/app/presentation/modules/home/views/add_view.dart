@@ -1,23 +1,24 @@
-import 'package:app_ganaderia/app/domain/models/user.dart';
-import 'package:app_ganaderia/main.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
+import '../../../../../main.dart';
+import '../../../../domain/models/user.dart';
 import '../../../routes/routes.dart';
 
-class HomeView extends StatefulWidget {
-  const HomeView({super.key});
+class AddView extends StatefulWidget {
+  const AddView({super.key});
+
   @override
-  State<HomeView> createState() => _HomeViewState();
+  State<AddView> createState() => _AddViewState();
 }
 
-class _HomeViewState extends State<HomeView> {
+class _AddViewState extends State<AddView> {
+  @override
   final Color _color = Colors.indigo.shade400;
-  late DateTime _initialDate, _date;
 
   @override
   void initState() {
     super.initState();
-    _initialDate = DateTime(2010, 1);
-    _date = _initialDate;
   }
 
   @override
@@ -37,15 +38,6 @@ class _HomeViewState extends State<HomeView> {
       appBar: AppBar(
         backgroundColor: _color,
         actions: [
-          IconButton(
-            onPressed: _selectedDate,
-            icon: const Icon(Icons.calendar_month),
-          ),
-          IconButton(
-            // si initial date es diferente a la fecha inicial habilitamos el botom
-            onPressed: _initialDate != _date ? () {} : null,
-            icon: const Icon(Icons.save),
-          ),
           IconButton(
             // si initial date es diferente a la fecha inicial habilitamos el botom
             onPressed: () async {
@@ -140,49 +132,7 @@ class _HomeViewState extends State<HomeView> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: CalendarDatePicker(
-          // Date time (año, mes, dia)
-          // fecha inicial en que sale el calendario
-          initialDate: _date,
-          // first date fecha inicial para el calendario
-          firstDate: DateTime(2010, 1),
-          lastDate: DateTime.now(),
-          // como se visualizara en forma inicial por año o normal
-          initialCalendarMode: DatePickerMode.day,
-          // deshabilitar todos los días sabados
-          selectableDayPredicate: (date) {
-            return date.weekday != 6;
-          },
-          onDateChanged: (date) {
-            setState(() {
-              _date = date;
-            });
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Acción cuando se presiona el botón
-        },
-        child: Icon(Icons.add),
-        tooltip: 'Agregar',
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      body: Center(),
     );
-  }
-
-  void _selectedDate() async {
-    final date = await showDatePicker(
-      context: context,
-      initialDate: _date,
-      firstDate: DateTime(2000, 5),
-      lastDate: DateTime.now(),
-    );
-    if (date != null) {
-      setState(() {
-        _date = date;
-      });
-    }
   }
 }

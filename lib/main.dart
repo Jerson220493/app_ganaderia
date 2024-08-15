@@ -22,7 +22,7 @@ void main() {
         InternetCheckear(),
       ),
       usersRepository: UsersRepositoryImp(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }

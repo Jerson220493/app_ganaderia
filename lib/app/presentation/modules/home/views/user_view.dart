@@ -194,23 +194,24 @@ class _DataTableExampleState extends State<DataTableExample> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmar tu acción'),
-          content: Text('¿ Estas Seguro de proceder ?'),
+          title: const Text('Confirmar tu acción'),
+          content: const Text('¿ Estas Seguro de proceder ?'),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context)
                     .pop(false); // Cierra el diálogo y retorna false
               },
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             TextButton(
               onPressed: () async {
+                deleteUserDataById(context, index.toString());
                 // await LocalDatabase().deleteUser(id: index);
                 Navigator.of(context)
                     .pop(true); // Cierra el diálogo y retorna true
               },
-              child: Text('Confirmar'),
+              child: const Text('Confirmar'),
             ),
           ],
         );
@@ -280,7 +281,7 @@ class _DataTableExampleState extends State<DataTableExample> {
                                     ),
                                     IconButton(
                                         onPressed: () {
-                                          // _deleteRecor(context, _index);
+                                          _deleteRecor(context, _index);
                                           setState(() {});
                                         },
                                         icon: const Icon(Icons.delete))
@@ -304,4 +305,8 @@ class _DataTableExampleState extends State<DataTableExample> {
 Future<List<Map<dynamic, dynamic>>> getDataUser(BuildContext context) async {
   final result = await Injector.of(context).usersRepository.getUsersData();
   return result;
+}
+
+Future<void> deleteUserDataById(BuildContext context, String id) async {
+  await Injector.of(context).usersRepository.deleteUserData(id);
 }

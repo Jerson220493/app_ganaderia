@@ -1,3 +1,4 @@
+import 'package:app_ganaderia/app/presentation/modules/home/views/add_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/home_view.dart';
@@ -13,5 +14,6 @@ Map<String, Widget Function(BuildContext)> get appRoutes {
     Routes.home: (context) => const HomeView(),
     Routes.ofLine: (context) => const OfLineView(),
     Routes.users: (context) => const UserView(),
+    Routes.add: (context) => const AddView(),
   };
 }

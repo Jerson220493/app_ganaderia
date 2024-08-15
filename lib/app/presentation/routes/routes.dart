@@ -5,4 +5,5 @@ class Routes {
   static const home = '/home';
   static const ofLine = '/ofLine';
   static const users = '/users';
+  static const add = '/add';
 }

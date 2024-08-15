@@ -140,7 +140,7 @@ class LocalDatabase {
 
   Future deleteUser({id}) async {
     final db = await database;
-    await db!.rawQuery("DELETE FROM users WHERE id = ${id}");
+    await db!.rawQuery('DELETE FROM users WHERE id = $id');
   }
 
   Future _createNo(Database db, int version) async {
