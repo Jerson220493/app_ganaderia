@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 
 class FormEditModal extends StatefulWidget {
   final int index;
+  final Function(String) actualizarTexto;
   const FormEditModal({
     super.key,
     this.index = 1,
+    required this.actualizarTexto,
   });
   @override
   _FormEditModalState createState() => _FormEditModalState();
@@ -78,7 +80,7 @@ class _FormEditModalState extends State<FormEditModal> {
                       onChanged: (value) {
                         email = value;
                       },
-                      controller: TextEditingController(text: userData!.email),
+                      controller: TextEditingController(text: userData.email),
                       decoration: const InputDecoration(
                           labelText: 'Correo Electronico'),
                       keyboardType: TextInputType.emailAddress,
@@ -143,7 +145,7 @@ class _FormEditModalState extends State<FormEditModal> {
                           int auxPerfil = (perfil == 'Administrador') ? 1 : 2;
                           updateUser(context, widget.index.toString(), name,
                               email, password, auxPerfil);
-                          setState(() {});
+                          // setState(() {});
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -168,17 +170,26 @@ class _FormEditModalState extends State<FormEditModal> {
       ),
     );
   }
-}
 
-Future<Map<String, dynamic>> getUserDataById(
-    BuildContext context, String id) async {
-  final result = await Injector.of(context).usersRepository.getUserDataById(id);
-  return result;
-}
+  Future<Map<String, dynamic>> getUserDataById(
+      BuildContext context, String id) async {
+    final result =
+        await Injector.of(context).usersRepository.getUserDataById(id);
+    return result;
+  }
 
-Future<void> updateUser(BuildContext context, String id, String name,
-    String email, String password, int perfil) async {
-  await Injector.of(context)
-      .usersRepository
-      .updateUserData(id, name, email, perfil, password);
+  Future<void> updateUser(BuildContext context, String id, String name,
+      String email, String password, int perfil) async {
+    final res = await Injector.of(context)
+        .usersRepository
+        .updateUserData(id, name, email, perfil, password);
+    print("Resultado de la actualizacion $res");
+    if (res == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("El email ya fue registrado en otro usuario"),
+        ),
+      );
+    }
+  }
 }

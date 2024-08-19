@@ -111,8 +111,15 @@ class LocalDatabase {
   }
 
   Future<int> insertUser({name, email, password, perfil}) async {
-    var photo = perfil == '1' ? "admin.png" : "operator.png";
+    // primero validar que el usuario no exista
     final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM users WHERE email = '${email}'");
+    if (!data.isEmpty) {
+      return 0;
+    }
+
+    var photo = perfil == '1' ? "admin.png" : "operator.png";
     int result = await db.insert('users', {
       "name": name,
       "email": email,
@@ -124,9 +131,16 @@ class LocalDatabase {
     return result;
   }
 
-  Future updateUser({id, name, email, password, perfil}) async {
-    var photo = perfil == 1 ? "admin.png" : "operator.png";
+  Future updateUser<int>({id, name, email, password, perfil}) async {
+    // primero validar que el usuario no exista
     final db = await database;
+    final List data = await db!
+        .rawQuery("SELECT * FROM users WHERE email = '$email' and id != $id ");
+    if (!data.isEmpty) {
+      return 0;
+    }
+
+    var photo = perfil == 1 ? "admin.png" : "operator.png";
     await db!.rawQuery("""
       UPDATE users SET 
         name = '${name}',
@@ -135,7 +149,7 @@ class LocalDatabase {
         photo = '${photo}',
         perfil = '${perfil}'
       WHERE id = '${id}'""");
-    return {};
+    return 1;
   }
 
   Future deleteUser({id}) async {

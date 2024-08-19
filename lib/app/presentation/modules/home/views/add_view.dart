@@ -1,3 +1,4 @@
+import 'package:app_ganaderia/app/presentation/global/widgets/customer_drawer.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,10 @@ class AddView extends StatefulWidget {
 class _AddViewState extends State<AddView> {
   @override
   final Color _color = Colors.indigo.shade400;
+  bool _fetching = false;
+
+  // variables para manejar los datos de ingreso
+  String _peso = '', _estatura = '', _raza = '', _genero = '';
 
   @override
   void initState() {
@@ -23,17 +28,6 @@ class _AddViewState extends State<AddView> {
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as User?;
-    String name = '';
-    String email = '';
-    String photo = '';
-    int perfil = 0;
-    if (args != null) {
-      name = args.name;
-      email = args.email;
-      photo = args.photo;
-      perfil = args.perfil;
-    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _color,
@@ -49,90 +43,175 @@ class _AddViewState extends State<AddView> {
         ],
         // automaticallyImplyLeading: false,
       ),
-      drawer: SizedBox(
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text(name),
-                accountEmail: Text(email),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/users/$photo'),
+      drawer: const CustomerDrawer(),
+      body: SafeArea(
+        child: Form(
+          child: AbsorbPointer(
+            absorbing: _fetching,
+            child: ListView(
+              padding: const EdgeInsets.all(20),
+              children: [
+                const Text(
+                  "Registro de bobino",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                decoration: BoxDecoration(
-                  color: Colors.indigo.shade400,
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.search),
-                title: const Text('Consultar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.home,
-                    arguments: '',
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.app_registration),
-                title: const Text('Registrar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.add,
-                    arguments: args,
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.update),
-                title: const Text('Actualizar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.home,
-                    arguments: '',
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.insert_chart_outlined),
-                title: const Text('Informes'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.users,
-                    arguments: '',
-                  );
-                },
-              ),
-              if (perfil == 1)
-                ListTile(
-                  leading: const Icon(Icons.group),
-                  title: const Text('Usuarios'),
-                  onTap: () async {
-                    await Navigator.pushNamed(
-                      context,
-                      Routes.users,
-                      arguments: args,
-                    );
+                const SizedBox(height: 15),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('add-peso'),
+                  onChanged: (value) {
+                    setState(() {
+                      _peso = value.trim().toLowerCase();
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'peso',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                  ),
+                  validator: (value) {
+                    value = value?.trim().toLowerCase() ?? '';
+                    if (value.isEmpty) {
+                      return 'Invalid user name';
+                    }
+                    return null;
                   },
                 ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Cerrar sesión'),
-                onTap: () async {
-                  Injector.of(context).authenticationRepository.signOut();
-                  Navigator.pushReplacementNamed(context, Routes.signIn);
-                },
-              ),
-            ],
+                const SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('add-estatura'),
+                  onChanged: (value) {
+                    setState(() {
+                      _estatura = value.replaceAll(' ', '').toLowerCase();
+                    });
+                  },
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    hintText: 'estatura',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                  ),
+                  validator: (value) {
+                    value = value?.trim().toLowerCase() ?? '';
+                    if (value.isEmpty) {
+                      return 'Estatura invalida';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('add-raza'),
+                  onChanged: (value) {
+                    setState(() {
+                      _raza = value.replaceAll(' ', '').toLowerCase();
+                    });
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    hintText: 'raza',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                  ),
+                  validator: (value) {
+                    value = value?.trim().toLowerCase() ?? '';
+                    if (value.isEmpty) {
+                      return 'Raza invalida';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                TextFormField(
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  key: const Key('add-genero'),
+                  onChanged: (value) {
+                    setState(() {
+                      _raza = value.replaceAll(' ', '').toLowerCase();
+                    });
+                  },
+                  keyboardType: TextInputType.text,
+                  decoration: const InputDecoration(
+                    hintText: 'genero',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20.0)),
+                    ),
+                  ),
+                  validator: (value) {
+                    value = value?.trim().toLowerCase() ?? '';
+                    if (value.isEmpty) {
+                      return 'genero';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Builder(
+                  builder: (context) {
+                    if (_fetching) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    return ElevatedButton(
+                      onPressed: () {
+                        final isValid = Form.of(context).validate();
+                        if (isValid) {
+                          _submit(context);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.indigo.shade400, // Color de fondo
+                        foregroundColor: Colors.white, // Color del texto
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0),
+                        ),
+                      ),
+                      child: const Text(
+                        'Registrar',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
           ),
         ),
       ),
-      body: Center(),
     );
+  }
+
+  Future<void> _submit(BuildContext context) async {
+    setState(() {
+      _fetching = true;
+    });
+    // final result = await Injector.of(context)
+    //     .authenticationRepository
+    //     .signIn("", "");
+
+    if (!mounted) {
+      return;
+    }
   }
 }

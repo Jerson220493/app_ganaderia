@@ -22,10 +22,10 @@ class UsersRepositoryImp implements UsersRepository {
   }
 
   @override
-  Future<void> updateUserData(id, name, email, perfil, password) async {
-    await LocalDatabase().updateUser(
+  Future<int> updateUserData(id, name, email, perfil, password) async {
+    final res = await LocalDatabase().updateUser(
         id: id, name: name, email: email, perfil: perfil, password: password);
-    // return user;
+    return res;
   }
 
   @override

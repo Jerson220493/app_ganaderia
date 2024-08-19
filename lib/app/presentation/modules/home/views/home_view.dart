@@ -1,6 +1,7 @@
 import 'package:app_ganaderia/app/domain/models/user.dart';
 import 'package:app_ganaderia/main.dart';
 import 'package:flutter/material.dart';
+import '../../../global/widgets/customer_drawer.dart';
 import '../../../routes/routes.dart';
 
 class HomeView extends StatefulWidget {
@@ -57,89 +58,7 @@ class _HomeViewState extends State<HomeView> {
         ],
         // automaticallyImplyLeading: false,
       ),
-      drawer: SizedBox(
-        child: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: <Widget>[
-              UserAccountsDrawerHeader(
-                accountName: Text(name),
-                accountEmail: Text(email),
-                currentAccountPicture: CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/users/$photo'),
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.indigo.shade400,
-                ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.search),
-                title: const Text('Consultar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.home,
-                    arguments: '',
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.app_registration),
-                title: const Text('Registrar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.add,
-                    arguments: args,
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.update),
-                title: const Text('Actualizar'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.home,
-                    arguments: '',
-                  );
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.insert_chart_outlined),
-                title: const Text('Informes'),
-                onTap: () async {
-                  await Navigator.pushNamed(
-                    context,
-                    Routes.users,
-                    arguments: '',
-                  );
-                },
-              ),
-              if (perfil == 1)
-                ListTile(
-                  leading: const Icon(Icons.group),
-                  title: const Text('Usuarios'),
-                  onTap: () async {
-                    await Navigator.pushNamed(
-                      context,
-                      Routes.users,
-                      arguments: args,
-                    );
-                  },
-                ),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Cerrar sesión'),
-                onTap: () async {
-                  Injector.of(context).authenticationRepository.signOut();
-                  Navigator.pushReplacementNamed(context, Routes.signIn);
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      drawer: const CustomerDrawer(),
       body: SafeArea(
         child: CalendarDatePicker(
           // Date time (año, mes, dia)
@@ -165,8 +84,8 @@ class _HomeViewState extends State<HomeView> {
         onPressed: () {
           // Acción cuando se presiona el botón
         },
-        child: Icon(Icons.add),
         tooltip: 'Agregar',
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

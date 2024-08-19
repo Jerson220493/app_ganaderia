@@ -2,7 +2,8 @@ import 'package:app_ganaderia/main.dart';
 import 'package:flutter/material.dart';
 
 class FormModal extends StatefulWidget {
-  const FormModal({super.key});
+  final Function(String) actualizarTexto;
+  const FormModal({super.key, required this.actualizarTexto});
 
   @override
   _FormModalState createState() => _FormModalState();
@@ -14,6 +15,20 @@ class _FormModalState extends State<FormModal> {
   String _email = '';
   String _perfil = '';
   String _password = '';
+
+  Future<void> insertData(BuildContext context, String name, String email,
+      String password, int perfil) async {
+    final res = await Injector.of(context)
+        .usersRepository
+        .insertUser(name, email, password, perfil);
+    if (res == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("El email ya fue registrado en otro usuario"),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,10 +126,11 @@ class _FormModalState extends State<FormModal> {
               onPressed: () async {
                 if (_formKey.currentState?.validate() ?? false) {
                   _formKey.currentState?.save();
-                  Navigator.pop(context);
                   int auxP = _perfil == 'Administrador' ? 1 : 2;
-                  insertData(context, _name, _email, _password, auxP);
-                  setState(() {});
+                  await insertData(context, _name, _email, _password, auxP);
+                  Navigator.of(context).pop(true);
+                  // setState(() {});
+                  widget.actualizarTexto('print entrado desde creacion');
                 }
               },
               style: ElevatedButton.styleFrom(
@@ -138,12 +154,4 @@ class _FormModalState extends State<FormModal> {
       ),
     );
   }
-}
-
-Future<int> insertData(BuildContext context, String name, String email,
-    String password, int perfil) async {
-  final result = await Injector.of(context)
-      .usersRepository
-      .insertUser(name, email, password, perfil);
-  return result;
 }

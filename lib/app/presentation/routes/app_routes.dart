@@ -1,5 +1,5 @@
 import 'package:app_ganaderia/app/presentation/modules/home/views/add_view.dart';
-import 'package:app_ganaderia/app/presentation/modules/home/views/user_view.dart';
+import 'package:app_ganaderia/app/presentation/modules/home/views/user/user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/home_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/offline/of_line_view.dart';
