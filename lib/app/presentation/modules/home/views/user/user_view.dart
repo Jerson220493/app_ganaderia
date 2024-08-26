@@ -178,6 +178,9 @@ class _DataTableExampleState extends State<DataTableExample> {
                             (_index != 1)
                                 ? Center(
                                     child: Row(
+                                      mainAxisSize: MainAxisSize
+                                          .min, // Esto asegura que el Row no ocupe todo el espacio disponible
+                                      mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
                                         IconButton(
                                           icon: const Icon(Icons.edit),

@@ -1,4 +1,5 @@
 import 'package:app_ganaderia/app/presentation/modules/home/views/add_view.dart';
+import 'package:app_ganaderia/app/presentation/modules/home/views/categories/category_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/user/user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/home_view.dart';
@@ -15,5 +16,6 @@ Map<String, Widget Function(BuildContext)> get appRoutes {
     Routes.ofLine: (context) => const OfLineView(),
     Routes.users: (context) => const UserView(),
     Routes.add: (context) => const AddView(),
+    Routes.categories: (context) => const CategoryView(),
   };
 }

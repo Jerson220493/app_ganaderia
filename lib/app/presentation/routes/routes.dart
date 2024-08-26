@@ -6,4 +6,5 @@ class Routes {
   static const ofLine = '/ofLine';
   static const users = '/users';
   static const add = '/add';
+  static const categories = '/categories';
 }

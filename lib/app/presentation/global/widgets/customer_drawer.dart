@@ -98,8 +98,12 @@ class CustomerDrawer extends StatelessWidget {
                   ListTile(
                     title: const Text('Categorías'),
                     leading: const Icon(Icons.category),
-                    onTap: () {
-                      // Acción al seleccionar Categorías
+                    onTap: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        Routes.categories,
+                        arguments: args,
+                      );
                     },
                   ),
                 ],

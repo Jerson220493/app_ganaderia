@@ -1,4 +1,6 @@
+import 'package:app_ganaderia/app/data/repositories_implementation/categories_repository_imp.dart';
 import 'package:app_ganaderia/app/data/repositories_implementation/users_repository_imp.dart';
+import 'package:app_ganaderia/app/domain/repositories/categories_repository.dart';
 import 'package:app_ganaderia/app/domain/repositories/users_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,6 +24,7 @@ void main() {
         InternetCheckear(),
       ),
       usersRepository: UsersRepositoryImp(),
+      categoriesRepository: CategoriesRepositoryImp(),
       child: const MyApp(),
     ),
   );
@@ -33,11 +36,13 @@ class Injector extends InheritedWidget {
       required super.child,
       required this.authenticationRepository,
       required this.connectivityRepository,
-      required this.usersRepository});
+      required this.usersRepository,
+      required this.categoriesRepository});
 
   final ConnectivityRepository connectivityRepository;
   final AuthenticationRepository authenticationRepository;
   final UsersRepository usersRepository;
+  final CategoriesRepository categoriesRepository;
 
   @override
   // ignore: avoid_renaming_method_parameters

@@ -1,4 +1,6 @@
+import 'dart:developer';
 import 'dart:ffi';
+import 'dart:math';
 
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
@@ -8,7 +10,8 @@ Database? _database;
 class LocalDatabase {
   Future get database async {
     if (_database != null) return _database;
-    _database = await _initializeDB('Local.db');
+    // _database = await _initializeDB('Local.db');
+    _database = await _initializeDB('App_ganaderia_local.db');
     return _database;
   }
 
@@ -21,7 +24,7 @@ class LocalDatabase {
   }
 
   Future _createDb(Database db, int version) async {
-    await db.execute("DROP TABLE IF EXISTS users");
+    // await db.execute("DROP TABLE IF EXISTS users");
     await db.execute('''
         CREATE TABLE users( id INTEGER PRIMARY KEY AUTOINCREMENT,
                             name VARCHAR(255),
@@ -37,6 +40,16 @@ class LocalDatabase {
       "password": "123456789",
       "photo": "admin.png",
       "perfil": "1",
+    });
+
+    // scripts de categories
+    await db.execute('''
+        CREATE TABLE categories( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                name VARCHAR(255)
+                                )
+      ''');
+    await db.insert('categories', {
+      "name": "General",
     });
   }
 
@@ -184,10 +197,73 @@ class LocalDatabase {
     return 'agregado';
   }
 
-  // Future addDataLocally({Name}) async {
-  //   final db = await database;
-  //   await db.insert('users', {"name": Name});
-  //   print('${Name} Agregado exitosamente');
-  //   return "added";
-  // }
+  // scripts categorias
+  Future readAllCategories() async {
+    final db = await database;
+    var categories = <Map>[];
+    final List data = await db!.rawQuery("SELECT * FROM categories");
+    print('categories');
+    print(data);
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        var category = data[i];
+        var json = <String, Object>{
+          "id": category['id'],
+          "name": category['name'],
+        };
+        categories.add(json);
+      }
+      return categories;
+    }
+    return {};
+  }
+
+  Future<int> insertCategory({name}) async {
+    // primero validar que el usuario no exista
+    final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM categories WHERE name = '${name}'");
+    if (!data.isEmpty) {
+      return 0;
+    }
+
+    int result = await db.insert('categories', {
+      "name": name,
+    });
+    return result;
+  }
+
+  Future getCategoryById({id}) async {
+    final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM categories WHERE id = '$id'");
+    if (data.isNotEmpty) {
+      var category = data[0];
+      return {
+        "name": category['name'],
+      };
+    }
+    return {};
+  }
+
+  Future updateCategory<int>({id, name}) async {
+    // primero validar que la categoria no exista
+    final db = await database;
+    final List data = await db!.rawQuery(
+        "SELECT * FROM categories WHERE name = '$name' and id != $id ");
+    if (data.isNotEmpty) {
+      return 0;
+    }
+
+    await db!.rawQuery("""
+      UPDATE categories SET 
+        name = '$name'
+      WHERE id = '$id'""");
+    return 1;
+  }
+
+  Future deleteCategory({id}) async {
+    final db = await database;
+    await db!.rawQuery('DELETE FROM categories WHERE id = $id');
+  }
 }
