@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../main.dart';
 import '../../../domain/models/user.dart';
@@ -36,7 +37,8 @@ class CustomerDrawer extends StatelessWidget {
               ),
             ),
             ListTile(
-              leading: const Icon(Icons.search),
+              leading: const Icon(FontAwesomeIcons.search,
+                  size: 25, color: Colors.black45),
               title: const Text('Consultar'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -47,7 +49,8 @@ class CustomerDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.app_registration),
+              leading: const Icon(FontAwesomeIcons.pen,
+                  size: 25, color: Colors.black45),
               title: const Text('Registrar'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -58,7 +61,8 @@ class CustomerDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.update),
+              leading: const Icon(FontAwesomeIcons.sync,
+                  size: 25, color: Colors.black45),
               title: const Text('Actualizar'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -69,7 +73,8 @@ class CustomerDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(Icons.insert_chart_outlined),
+              leading: const Icon(FontAwesomeIcons.fileAlt,
+                  size: 25, color: Colors.black45),
               title: const Text('Informes'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -82,10 +87,12 @@ class CustomerDrawer extends StatelessWidget {
             if (perfil == 1)
               ExpansionTile(
                 title: const Text('Configuración'),
-                leading: const Icon(Icons.settings),
+                leading: const Icon(FontAwesomeIcons.cog,
+                    size: 25, color: Colors.black45),
                 children: <Widget>[
                   ListTile(
-                    leading: const Icon(Icons.group),
+                    leading: const Icon(FontAwesomeIcons.users,
+                        size: 25, color: Colors.black45),
                     title: const Text('Usuarios'),
                     onTap: () async {
                       await Navigator.pushNamed(
@@ -97,7 +104,8 @@ class CustomerDrawer extends StatelessWidget {
                   ),
                   ListTile(
                     title: const Text('Categorías'),
-                    leading: const Icon(Icons.category),
+                    leading: const Icon(FontAwesomeIcons.list,
+                        size: 25, color: Colors.black45),
                     onTap: () async {
                       await Navigator.pushNamed(
                         context,
@@ -106,10 +114,23 @@ class CustomerDrawer extends StatelessWidget {
                       );
                     },
                   ),
+                  ListTile(
+                    title: const Text('Razas'),
+                    leading: const Icon(FontAwesomeIcons.cow,
+                        size: 25, color: Colors.black45),
+                    onTap: () async {
+                      await Navigator.pushNamed(
+                        context,
+                        Routes.razas,
+                        arguments: args,
+                      );
+                    },
+                  ),
                 ],
               ),
             ListTile(
-              leading: const Icon(Icons.logout),
+              leading: const Icon(FontAwesomeIcons.signOutAlt,
+                  size: 25, color: Colors.black45),
               title: const Text('Cerrar sesión'),
               onTap: () async {
                 Injector.of(context).authenticationRepository.signOut();

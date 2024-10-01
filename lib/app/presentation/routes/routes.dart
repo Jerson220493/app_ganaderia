@@ -7,4 +7,5 @@ class Routes {
   static const users = '/users';
   static const add = '/add';
   static const categories = '/categories';
+  static const razas = '/razas';
 }

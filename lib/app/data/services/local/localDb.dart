@@ -11,7 +11,7 @@ class LocalDatabase {
   Future get database async {
     if (_database != null) return _database;
     // _database = await _initializeDB('Local.db');
-    _database = await _initializeDB('App_ganaderia_local.db');
+    _database = await _initializeDB('App_ganaderia_local2.db');
     return _database;
   }
 
@@ -49,6 +49,20 @@ class LocalDatabase {
                                 )
       ''');
     await db.insert('categories', {
+      "name": "General",
+    });
+
+    // scripts de categories
+    await db.execute('''
+        CREATE TABLE razas( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            name VARCHAR(255), 
+                            id_raza_padre INTEGER,
+                            name_raza_padre VARCHAR(255),
+                            id_raza_madre INTEGER,
+                            name_raza_madre VARCHAR(255)
+                          )
+      ''');
+    await db.insert('razas', {
       "name": "General",
     });
   }
@@ -265,5 +279,95 @@ class LocalDatabase {
   Future deleteCategory({id}) async {
     final db = await database;
     await db!.rawQuery('DELETE FROM categories WHERE id = $id');
+  }
+
+  /******************************** razas *********************************/
+  Future readAllRazas() async {
+    final db = await database;
+    var razas = <Map>[];
+    final List data = await db!.rawQuery("SELECT * FROM razas");
+    print('razas');
+    print(data);
+    if (data.isNotEmpty) {
+      for (var i = 0; i < data.length; i++) {
+        var raza = data[i];
+        var json = <String, Object>{
+          "id": raza['id'],
+          "name": raza['name'],
+          "name_raza_padre": raza['name_raza_padre'] ?? '',
+          "name_raza_madre": raza['name_raza_madre'] ?? '',
+        };
+        razas.add(json);
+      }
+      return razas;
+    }
+    return {};
+  }
+
+  Future<int> insertRaza(
+      {name, idRazaPadre, nameRazaPadre, idRazaMadre, nameRazaMadre}) async {
+    final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM razas WHERE name = '${name}'");
+    if (!data.isEmpty) {
+      return 0;
+    }
+
+    int result = await db.insert('razas', {
+      "name": name,
+      "id_raza_padre": idRazaPadre,
+      "name_raza_padre": nameRazaPadre,
+      "id_raza_madre": idRazaMadre,
+      "name_raza_madre": nameRazaMadre,
+    });
+    return result;
+  }
+
+  Future getRazaById({id}) async {
+    final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM razas WHERE id = '$id'");
+    if (data.isNotEmpty) {
+      var raza = data[0];
+      return {
+        "name": raza['name'],
+        "id_raza_padre": raza['id_raza_padre'],
+        "name_raza_padre": raza['name_raza_padre'],
+        "id_raza_madre": raza['id_raza_madre'],
+        "name_raza_madre": raza['name_raza_madre'],
+      };
+    }
+    return {};
+  }
+
+  Future updateRaza<int>(
+      {id,
+      name,
+      id_raza_padre,
+      name_raza_padre,
+      id_raza_madre,
+      name_raza_madre}) async {
+    // primero validar que la categoria no exista
+    final db = await database;
+    final List data = await db!.rawQuery(
+        "SELECT * FROM categories WHERE name = '$name' and id != $id ");
+    if (data.isNotEmpty) {
+      return 0;
+    }
+
+    await db!.rawQuery("""
+      UPDATE razas SET
+        name = '$name',
+        id_raza_padre = '$id_raza_padre',
+        name_raza_padre = '$name_raza_padre',
+        id_raza_madre = '$id_raza_madre',
+        name_raza_madre = '$name_raza_madre'
+      WHERE id = '$id'""");
+    return 1;
+  }
+
+  Future deleteRaza({id}) async {
+    final db = await database;
+    await db!.rawQuery('DELETE FROM razas WHERE id = $id');
   }
 }
