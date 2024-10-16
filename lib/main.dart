@@ -1,7 +1,9 @@
 import 'package:app_ganaderia/app/data/repositories_implementation/categories_repository_imp.dart';
+import 'package:app_ganaderia/app/data/repositories_implementation/core_imp.dart';
 import 'package:app_ganaderia/app/data/repositories_implementation/razas_repository_imp.dart';
 import 'package:app_ganaderia/app/data/repositories_implementation/users_repository_imp.dart';
 import 'package:app_ganaderia/app/domain/repositories/categories_repository.dart';
+import 'package:app_ganaderia/app/domain/repositories/core_repository.dart';
 import 'package:app_ganaderia/app/domain/repositories/raza_repository.dart';
 import 'package:app_ganaderia/app/domain/repositories/users_repository.dart';
 import 'package:flutter/material.dart';
@@ -28,6 +30,7 @@ void main() {
       usersRepository: UsersRepositoryImp(),
       categoriesRepository: CategoriesRepositoryImp(),
       razasRepository: RazasRepositoryImp(),
+      coreRepository: CoreRepositoryImp(),
       child: const MyApp(),
     ),
   );
@@ -41,13 +44,15 @@ class Injector extends InheritedWidget {
       required this.connectivityRepository,
       required this.usersRepository,
       required this.categoriesRepository,
-      required this.razasRepository});
+      required this.razasRepository,
+      required this.coreRepository});
 
   final ConnectivityRepository connectivityRepository;
   final AuthenticationRepository authenticationRepository;
   final UsersRepository usersRepository;
   final CategoriesRepository categoriesRepository;
   final RazasRepository razasRepository;
+  final CoreRepository coreRepository;
 
   @override
   // ignore: avoid_renaming_method_parameters

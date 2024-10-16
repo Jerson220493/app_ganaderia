@@ -65,6 +65,29 @@ class LocalDatabase {
     await db.insert('razas', {
       "name": "General",
     });
+
+    // scripts de categories
+    await db.execute('''
+        CREATE TABLE bobinos( id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            name VARCHAR(255), 
+                            categoria INTEGER,
+                            raza INTEGER,
+                            genero VARCHAR(255),
+                            fecha_nacimiento VARCHAR(50),
+                            peso_inicial decimal(12,4),
+                            qr_text TEXT
+                          )
+      ''');
+
+    // scripts bobinos
+    await db.execute('''
+        CREATE TABLE data_bobinos( 
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            id_bobino INTEGER,
+                            peso REAL,
+                            date TEXT
+                          )
+      ''');
   }
 
   Future readUser({email, password}) async {
@@ -369,5 +392,64 @@ class LocalDatabase {
   Future deleteRaza({id}) async {
     final db = await database;
     await db!.rawQuery('DELETE FROM razas WHERE id = $id');
+  }
+
+  Future<int> insertBobino(
+      {name,
+      categoria,
+      raza,
+      genero,
+      fechaNacimiento,
+      pesoInicial,
+      qrText}) async {
+    final db = await database;
+
+    final List data = await db!.rawQuery("SELECT * FROM bobinos");
+    print('******** bobinos');
+    print(data);
+
+    int result = await db.insert('bobinos', {
+      "name": name,
+      "categoria": categoria,
+      "raza": raza,
+      "genero": genero,
+      "fecha_nacimiento": fechaNacimiento,
+      "peso_inicial": pesoInicial,
+      "qr_text": qrText,
+    });
+    return result;
+  }
+
+  Future<int> insertUpdateBobino({
+    id,
+    peso,
+    date,
+  }) async {
+    final db = await database;
+
+    int result = await db.insert('data_bobinos', {
+      "id_bobino": id,
+      "peso": peso,
+      "date": date,
+    });
+    return result;
+  }
+
+  Future getBobinoById({id}) async {
+    final db = await database;
+    final List data =
+        await db!.rawQuery("SELECT * FROM bobinos WHERE id = '$id'");
+    if (data.isNotEmpty) {
+      var raza = data[0];
+      return {
+        "name": raza['name'],
+        "categoria": raza['categoria'],
+        "raza": raza['raza'],
+        "genero": raza['genero'],
+        "fecha_nacimiento": raza['fecha_nacimiento'],
+        "peso_inicial": raza['peso_inicial'],
+      };
+    }
+    return {};
   }
 }

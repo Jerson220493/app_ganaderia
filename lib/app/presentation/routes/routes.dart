@@ -8,4 +8,6 @@ class Routes {
   static const add = '/add';
   static const categories = '/categories';
   static const razas = '/razas';
+  static const information = '/information';
+  static const consultar = '/consultar';
 }

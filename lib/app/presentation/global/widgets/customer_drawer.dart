@@ -10,6 +10,7 @@ class CustomerDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(ModalRoute.of(context)!.settings.arguments);
     final args = ModalRoute.of(context)!.settings.arguments as User?;
     String name = '';
     String email = '';
@@ -36,21 +37,21 @@ class CustomerDrawer extends StatelessWidget {
                 color: Colors.indigo.shade400,
               ),
             ),
-            ListTile(
-              leading: const Icon(FontAwesomeIcons.search,
-                  size: 25, color: Colors.black45),
-              title: const Text('Consultar'),
-              onTap: () async {
-                await Navigator.pushNamed(
-                  context,
-                  Routes.home,
-                  arguments: '',
-                );
-              },
-            ),
+            // ListTile(
+            //   leading: const Icon(FontAwesomeIcons.search,
+            //       size: 25, color: Colors.black45),
+            //   title: const Text('Consultar'),
+            //   onTap: () async {
+            //     await Navigator.pushNamed(
+            //       context,
+            //       Routes.home,
+            //       arguments: '',
+            //     );
+            //   },
+            // ),
             ListTile(
               leading: const Icon(FontAwesomeIcons.pen,
-                  size: 25, color: Colors.black45),
+                  size: 20, color: Colors.black45),
               title: const Text('Registrar'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -61,20 +62,20 @@ class CustomerDrawer extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: const Icon(FontAwesomeIcons.sync,
-                  size: 25, color: Colors.black45),
-              title: const Text('Actualizar'),
+              leading: const Icon(FontAwesomeIcons.search,
+                  size: 20, color: Colors.black45),
+              title: const Text('Consultar'),
               onTap: () async {
                 await Navigator.pushNamed(
                   context,
-                  Routes.home,
+                  Routes.consultar,
                   arguments: '',
                 );
               },
             ),
             ListTile(
               leading: const Icon(FontAwesomeIcons.fileAlt,
-                  size: 25, color: Colors.black45),
+                  size: 20, color: Colors.black45),
               title: const Text('Informes'),
               onTap: () async {
                 await Navigator.pushNamed(
@@ -88,11 +89,11 @@ class CustomerDrawer extends StatelessWidget {
               ExpansionTile(
                 title: const Text('Configuración'),
                 leading: const Icon(FontAwesomeIcons.cog,
-                    size: 25, color: Colors.black45),
+                    size: 20, color: Colors.black45),
                 children: <Widget>[
                   ListTile(
                     leading: const Icon(FontAwesomeIcons.users,
-                        size: 25, color: Colors.black45),
+                        size: 20, color: Colors.black45),
                     title: const Text('Usuarios'),
                     onTap: () async {
                       await Navigator.pushNamed(
@@ -105,7 +106,7 @@ class CustomerDrawer extends StatelessWidget {
                   ListTile(
                     title: const Text('Categorías'),
                     leading: const Icon(FontAwesomeIcons.list,
-                        size: 25, color: Colors.black45),
+                        size: 20, color: Colors.black45),
                     onTap: () async {
                       await Navigator.pushNamed(
                         context,
@@ -117,7 +118,7 @@ class CustomerDrawer extends StatelessWidget {
                   ListTile(
                     title: const Text('Razas'),
                     leading: const Icon(FontAwesomeIcons.cow,
-                        size: 25, color: Colors.black45),
+                        size: 20, color: Colors.black45),
                     onTap: () async {
                       await Navigator.pushNamed(
                         context,
@@ -130,7 +131,7 @@ class CustomerDrawer extends StatelessWidget {
               ),
             ListTile(
               leading: const Icon(FontAwesomeIcons.signOutAlt,
-                  size: 25, color: Colors.black45),
+                  size: 20, color: Colors.black45),
               title: const Text('Cerrar sesión'),
               onTap: () async {
                 Injector.of(context).authenticationRepository.signOut();
