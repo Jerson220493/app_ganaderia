@@ -10,4 +10,6 @@ class Routes {
   static const razas = '/razas';
   static const information = '/information';
   static const consultar = '/consultar';
+  static const report_raza = '/report_raza';
+  static const reportBobino = '/report_bobino';
 }

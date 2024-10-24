@@ -35,4 +35,31 @@ class CoreRepositoryImp implements CoreRepository {
     );
     return result;
   }
+
+  @override
+  Future<List<Map<String, dynamic>>> getDataRazaReport() async {
+    final result = await LocalDatabase().getDataRazaReport();
+    return result;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getDataBobinoReport() async {
+    final result = await LocalDatabase().getDataBobinoReport();
+    return result;
+  }
+
+  @override
+  Future insertEvent(date, title) async {
+    int result = await LocalDatabase().insertEvent(
+      date: date,
+      title: title,
+    );
+    return result;
+  }
+
+  @override
+  Future<List<Map<String, dynamic>>> getEvents() async {
+    final result = await LocalDatabase().getEvents();
+    return result;
+  }
 }

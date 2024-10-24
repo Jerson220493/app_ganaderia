@@ -1,5 +1,9 @@
 import 'package:app_ganaderia/app/domain/models/bobino.dart';
+import 'package:app_ganaderia/app/domain/models/user.dart';
+import 'package:app_ganaderia/app/presentation/global/widgets/customer_drawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import '../../../../../main.dart';
 import '../../../routes/routes.dart';
@@ -23,9 +27,20 @@ class _ConsultarViewState extends State<ConsultarView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          IconButton(
+            // si initial date es diferente a la fecha inicial habilitamos el botom
+            onPressed: () async {
+              Injector.of(context).authenticationRepository.signOut();
+              Navigator.pushReplacementNamed(context, Routes.signIn);
+            },
+            icon: const Icon(Icons.logout),
+          ),
+        ],
         backgroundColor: _color,
-        automaticallyImplyLeading: false,
+        // automaticallyImplyLeading: false,
       ),
+      drawer: const CustomerDrawer(),
       body: const BobinoSearchScreen(),
     );
   }
@@ -45,9 +60,17 @@ class _BobinoSearchScreenState extends State<BobinoSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as User?;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Consulta de Bobino'),
+        title: const Text(
+          'Consulta de Bobino',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -108,7 +131,8 @@ class _BobinoSearchScreenState extends State<BobinoSearchScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => BobinoDetailScreen(qr: _qrData),
+                          builder: (context) =>
+                              BobinoDetailScreen(qr: _qrData, args: args),
                         ),
                       );
                     } else if (_idController.text.isNotEmpty) {
@@ -118,7 +142,8 @@ class _BobinoSearchScreenState extends State<BobinoSearchScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BobinoDetailScreen(id: id),
+                            builder: (context) =>
+                                BobinoDetailScreen(id: id, args: args),
                           ),
                         );
                       } else {
@@ -186,8 +211,10 @@ class _QrScannerScreenState extends State<QrScannerScreen> {
 class BobinoDetailScreen extends StatefulWidget {
   final int? id;
   final String? qr;
+  final User? args;
 
-  const BobinoDetailScreen({Key? key, this.id, this.qr}) : super(key: key);
+  const BobinoDetailScreen({Key? key, this.id, this.qr, this.args})
+      : super(key: key);
 
   @override
   State<BobinoDetailScreen> createState() => _BobinoDetailScreenState();
@@ -264,23 +291,6 @@ class _BobinoDetailScreenState extends State<BobinoDetailScreen> {
     return result;
   }
 
-  Future<void> updateData(
-      BuildContext context,
-      String id,
-      String name,
-      String categoria,
-      String raza,
-      String genero,
-      String? fechaNacimiento,
-      int peso) async {
-    final res = await Injector.of(context).coreRepository.insertUpdateBobino(
-        id, name, categoria, raza, genero, fechaNacimiento, peso);
-    await Navigator.pushNamed(
-      context,
-      Routes.home,
-    );
-  }
-
   @override
   final Color _color = Colors.indigo.shade400;
   bool _fetching = false;
@@ -306,6 +316,7 @@ class _BobinoDetailScreenState extends State<BobinoDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final args = widget.args;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: _color,
@@ -590,7 +601,9 @@ class _BobinoDetailScreenState extends State<BobinoDetailScreen> {
                                       _selectedDate.toString(),
                                       _peso,
                                     );
-                                    Navigator.of(context).pop(true);
+                                    await Navigator.pushNamed(
+                                        context, Routes.consultar,
+                                        arguments: args);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -603,7 +616,7 @@ class _BobinoDetailScreenState extends State<BobinoDetailScreen> {
                                   ),
                                 ),
                                 child: const Text(
-                                  'Registrar',
+                                  'Actualizar',
                                   style: TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
@@ -618,6 +631,19 @@ class _BobinoDetailScreenState extends State<BobinoDetailScreen> {
                   ),
                 ),
     );
+  }
+
+  Future<void> updateData(
+      BuildContext context,
+      String id,
+      String name,
+      String categoria,
+      String raza,
+      String genero,
+      String? fechaNacimiento,
+      int peso) async {
+    final res = await Injector.of(context).coreRepository.insertUpdateBobino(
+        id, name, categoria, raza, genero, fechaNacimiento, peso);
   }
 
   Future<void> _submit(BuildContext context) async {

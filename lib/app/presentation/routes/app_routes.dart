@@ -2,6 +2,8 @@ import 'package:app_ganaderia/app/presentation/modules/home/views/add_view.dart'
 import 'package:app_ganaderia/app/presentation/modules/home/views/categories/category_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/consultar_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/razas/raza_view.dart';
+import 'package:app_ganaderia/app/presentation/modules/home/views/reports/report_bobino_view.dart';
+import 'package:app_ganaderia/app/presentation/modules/home/views/reports/report_raza_view.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/user/user_view.dart';
 import 'package:flutter/material.dart';
 import 'package:app_ganaderia/app/presentation/modules/home/views/home_view.dart';
@@ -26,5 +28,7 @@ Map<String, Widget Function(BuildContext)> get appRoutes {
       return QrRepresentationScreen(bobinoId: bobinoId);
     },
     Routes.consultar: (context) => const ConsultarView(),
+    Routes.report_raza: (context) => ReportRazaView(),
+    Routes.reportBobino: (context) => ReportBobinoView(),
   };
 }

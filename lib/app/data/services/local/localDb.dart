@@ -88,6 +88,14 @@ class LocalDatabase {
                             date TEXT
                           )
       ''');
+
+    await db.execute('''
+        CREATE TABLE events( 
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            date TEXT,
+                            title VARCHAR(255)
+                          )
+      ''');
   }
 
   Future readUser({email, password}) async {
@@ -427,10 +435,14 @@ class LocalDatabase {
   }) async {
     final db = await database;
 
+    final List data = await db!.rawQuery("SELECT * FROM data_bobinos");
+    print('******** data_bobinos');
+    print(data);
+
     int result = await db.insert('data_bobinos', {
       "id_bobino": id,
       "peso": peso,
-      "date": date,
+      "date": date.millisecondsSinceEpoch,
     });
     return result;
   }
@@ -451,5 +463,100 @@ class LocalDatabase {
       };
     }
     return {};
+  }
+
+  Future<List<Map<String, dynamic>>> getDataRazaReport() async {
+    final db =
+        await database; // Aquí se obtiene la referencia a tu base de datos
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+  SELECT 
+    r.name, 
+    strftime('%Y-%m-%d', db.date / 1000, 'unixepoch') AS formatted_date,
+    SUM(db.peso) AS total_peso
+  FROM 
+    data_bobinos db
+  JOIN 
+    bobinos b ON db.id_bobino = b.id
+  JOIN 
+    razas r on b.raza = r.id
+  GROUP BY 
+    b.raza, formatted_date
+  ORDER BY 
+    formatted_date ASC;
+''');
+    // print(result);
+
+    // Convertir el campo date de milisegundos a DateTime
+    List<Map<String, dynamic>> formattedResult = result.map((row) {
+      return {
+        'raza': row['name'],
+        'date': row['formatted_date'],
+        'total_peso': row['total_peso']
+      };
+    }).toList();
+    return formattedResult;
+  }
+
+  Future<List<Map<String, dynamic>>> getDataBobinoReport() async {
+    final db =
+        await database; // Aquí se obtiene la referencia a tu base de datos
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+  SELECT 
+    b.name, 
+    strftime('%Y-%m-%d', db.date / 1000, 'unixepoch') AS formatted_date,
+    SUM(db.peso) AS total_peso
+  FROM 
+    data_bobinos db
+  JOIN 
+    bobinos b ON db.id_bobino = b.id
+  GROUP BY 
+    b.id, formatted_date
+  ORDER BY 
+    formatted_date ASC;
+''');
+    // print(result);
+
+    // Convertir el campo date de milisegundos a DateTime
+    List<Map<String, dynamic>> formattedResult = result.map((row) {
+      return {
+        'raza': row['name'],
+        'date': row['formatted_date'],
+        'total_peso': row['total_peso']
+      };
+    }).toList();
+    return formattedResult;
+  }
+
+  Future<int> insertEvent({
+    date,
+    title,
+  }) async {
+    final db = await database;
+    int result = await db.insert('events', {
+      "date": date.millisecondsSinceEpoch,
+      "title": title,
+    });
+    return result;
+  }
+
+  Future<List<Map<String, dynamic>>> getEvents() async {
+    final db =
+        await database; // Aquí se obtiene la referencia a tu base de datos
+    final List<Map<String, dynamic>> result = await db.rawQuery('''
+  SELECT 
+    strftime('%Y-%m-%d', date / 1000, 'unixepoch') AS date,
+    title
+  FROM 
+    events 
+''');
+    // Convertir el campo date de milisegundos a DateTime
+    List<Map<String, dynamic>> formattedResult = result.map((row) {
+      return {
+        'date': row['date'],
+        'title': row['title'],
+      };
+    }).toList();
+
+    return formattedResult;
   }
 }
